@@ -1,0 +1,31 @@
+{
+  "name": "fullstackopen-node-express",
+  "version": "1.0.0",
+  "description": "Exercises of the Full Stack Open course - Node.js and Express",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bayodesegun/fullstackopen-node-express.git"
+  },
+  "keywords": [
+    "node.js",
+    "express"
+  ],
+  "author": "Bayode Aderinola",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bayodesegun/fullstackopen-node-express/issues"
+  },
+  "homepage": "https://github.com/bayodesegun/fullstackopen-node-express#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
