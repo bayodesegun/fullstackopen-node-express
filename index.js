@@ -28,6 +28,13 @@ app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
 
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const person = persons.find(_person => _person.id === id)
+    if (!person) response.status(404).json({detail: 'Phonebook entry not found!'})
+    response.json(person)
+})
+
 app.get('/info', (request, response) => {
     const info = `
     <p>Phonebook has info for ${persons.length} ${persons.length === 1 ? 'person' : 'people'}</p>
