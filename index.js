@@ -35,6 +35,13 @@ app.get('/api/persons/:id', (request, response) => {
     response.json(person)
 })
 
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    persons = persons.filter(_person => _person.id !== id)
+
+    response.status(204).end()
+})
+
 app.get('/info', (request, response) => {
     const info = `
     <p>Phonebook has info for ${persons.length} ${persons.length === 1 ? 'person' : 'people'}</p>
