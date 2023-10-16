@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
       "id": 1,
@@ -28,10 +30,19 @@ app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
 
+app.post('/api/persons', (request, response) => {
+    const person = request.body
+    person.id = Math.ceil(Math.random() * 99 + 1)
+    persons = persons.concat(person)
+
+    response.status(201).json(person)
+})
+
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     const person = persons.find(_person => _person.id === id)
     if (!person) response.status(404).json({detail: 'Phonebook entry not found!'})
+
     response.json(person)
 })
 
