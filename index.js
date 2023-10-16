@@ -32,6 +32,23 @@ app.get('/api/persons', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const person = request.body
+    let error = 'Please fix the following errors: '
+    if (!person.name) {
+        error = `${error}
+- Name is missing`
+    }
+    if (!person.number) {
+        error = `${error}
+- Number is missing`
+    }
+    if (persons.find(_person => _person.name === person.name)) {
+        error = `${error}
+- Name must be unique`
+    }
+    console.log(error)
+    if (error.includes('\n'))
+        return response.status(400).json({error})
+
     person.id = Math.ceil(Math.random() * 99 + 1)
     persons = persons.concat(person)
 
@@ -41,7 +58,7 @@ app.post('/api/persons', (request, response) => {
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     const person = persons.find(_person => _person.id === id)
-    if (!person) response.status(404).json({detail: 'Phonebook entry not found!'})
+    if (!person) return response.status(404).json({detail: 'Phonebook entry not found!'})
 
     response.json(person)
 })
