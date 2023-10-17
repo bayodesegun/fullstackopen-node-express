@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
     {
@@ -45,7 +47,6 @@ app.post('/api/persons', (request, response) => {
         error = `${error}
 - Name must be unique`
     }
-    console.log(error)
     if (error.includes('\n'))
         return response.status(400).json({error})
 
