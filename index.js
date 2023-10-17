@@ -3,7 +3,9 @@ const app = express()
 const morgan = require('morgan')
 
 app.use(express.json())
-app.use(morgan('tiny'))
+
+morgan.token('data',  (req, res) => req.method === 'POST' ? JSON.stringify(req.body): ' ' )
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 let persons = [
     {
@@ -50,8 +52,8 @@ app.post('/api/persons', (request, response) => {
     if (error.includes('\n'))
         return response.status(400).json({error})
 
-    person.id = Math.ceil(Math.random() * 99 + 1)
-    persons = persons.concat(person)
+    const newPerson = {...person, id: Math.ceil(Math.random() * 99 + 1)}
+    persons = persons.concat(newPerson)
 
     response.status(201).json(person)
 })
