@@ -1,9 +1,10 @@
 const express = require('express')
-const app = express()
 const morgan = require('morgan')
+const cors = require('cors')
 
+const app = express()
+app.use(cors())
 app.use(express.json())
-
 morgan.token('data',  (req, res) => req.method === 'POST' ? JSON.stringify(req.body): ' ' )
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
@@ -55,7 +56,7 @@ app.post('/api/persons', (request, response) => {
     const newPerson = {...person, id: Math.ceil(Math.random() * 99 + 1)}
     persons = persons.concat(newPerson)
 
-    response.status(201).json(person)
+    response.status(201).json(newPerson)
 })
 
 app.get('/api/persons/:id', (request, response) => {
