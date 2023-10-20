@@ -36,6 +36,7 @@ app.post('/api/persons', (request, response) => {
     const {name, number} = person
     const newPerson = new Person({name, number})
     newPerson.save().then(result => {
+      console.log(`Created a new entry - ${result.name} ${result.number}`)
       response.status(201).json(result)
     })
 })
@@ -49,10 +50,11 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(_person => _person.id !== id)
-
-    response.status(204).end()
+    const id = request.params.id
+    Person.findByIdAndDelete(id).then(result => {
+      console.log(`Deleted ${result.name} (${result.number}) from the phonebook.`)
+      response.status(204).end()
+    })
 })
 
 app.get('/info', (request, response) => {
