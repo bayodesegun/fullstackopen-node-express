@@ -30,17 +30,14 @@ app.post('/api/persons', (request, response) => {
         error = `${error}
 - Number is missing`
     }
-    if (persons.find(_person => _person.name === person.name)) {
-        error = `${error}
-- Name must be unique`
-    }
     if (error.includes('\n'))
         return response.status(400).json({error})
 
-    const newPerson = {...person, id: Math.ceil(Math.random() * 99 + 1)}
-    persons = persons.concat(newPerson)
-
-    response.status(201).json(newPerson)
+    const {name, number} = person
+    const newPerson = new Person({name, number})
+    newPerson.save().then(result => {
+      response.status(201).json(result)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -65,6 +62,7 @@ app.get('/info', (request, response) => {
     `
     response.send(info)
   })
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
