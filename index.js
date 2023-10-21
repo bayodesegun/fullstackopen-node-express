@@ -15,8 +15,8 @@ app.use(express.static('dist'))
 
 app.get('/api/persons', (request, response, next) => {
   Person.find({})
-		.then(result => {
-			response.json(result)
+		.then(persons => {
+			response.json(persons)
 		})
 		.catch(error => next(error))
 })
@@ -33,9 +33,9 @@ app.post('/api/persons', (request, response, next) => {
 	const {name, number} = person
 	const newPerson = new Person({name, number})
 	newPerson.save()
-		.then(result => {
-			console.log(`Created a new entry - ${result.name} ${result.number}`)
-			response.status(201).json(result)
+		.then(createdPerson => {
+			console.log(`Created a new entry - ${createdPerson.name} ${createdPerson.number}`)
+			response.status(201).json(createdPerson)
 		})
 		.catch(error => next(error))
 })
@@ -48,12 +48,24 @@ app.get('/api/persons/:id', (request, response) => {
 	response.json(person)
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+	const id = request.params.id
+	const {name, number} = request.body
+	const person = {name, number}
+	Person.findByIdAndUpdate(id, person, {new: true})
+		.then(updatedPerson => {
+			console.log(`Updated ${updatedPerson.name}'s phone number to ${updatedPerson.number}`)
+			response.json(updatedPerson)
+		})
+		.catch(error => next(error))
+})
+
 app.delete('/api/persons/:id', (request, response, next) => {
 	const id = request.params.id
 	Person.findByIdAndDelete(id)
-		.then(result => {
-			if (result)
-				console.log(`Deleted ${result.name} (${result.number}) from the phonebook.`)
+		.then(deletedPerson => {
+			if (deletedPerson)
+				console.log(`Deleted ${deletedPerson.name} (${deletedPerson.number}) from the phonebook.`)
 			response.status(204).end()
 		})
 		.catch(error => next(error))
