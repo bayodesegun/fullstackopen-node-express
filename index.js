@@ -40,19 +40,23 @@ app.post('/api/persons', (request, response, next) => {
 		.catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (request, response) => {
-	const id = Number(request.params.id)
-	const person = persons.find(_person => _person.id === id)
-	if (!person) return response.status(404).json({detail: 'Phonebook entry not found!'})
-
-	response.json(person)
+app.get('/api/persons/:id', (request, response, next) => {
+	Person.findById(request.params.id)
+		.then(personFound => {
+			if (personFound) {
+				console.log(`Found record ${personFound}`)
+				return response.json(personFound)
+			} else {
+				return response.status(404).json({error: 'Phonebook entry not found!'})
+			}
+		})
+		.catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-	const id = request.params.id
 	const {name, number} = request.body
 	const person = {name, number}
-	Person.findByIdAndUpdate(id, person, {new: true})
+	Person.findByIdAndUpdate(request.params.id, person, {new: true})
 		.then(updatedPerson => {
 			console.log(`Updated ${updatedPerson.name}'s phone number to ${updatedPerson.number}`)
 			response.json(updatedPerson)
@@ -61,8 +65,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-	const id = request.params.id
-	Person.findByIdAndDelete(id)
+	Person.findByIdAndDelete(request.params.id)
 		.then(deletedPerson => {
 			if (deletedPerson)
 				console.log(`Deleted ${deletedPerson.name} (${deletedPerson.number}) from the phonebook.`)
@@ -71,12 +74,18 @@ app.delete('/api/persons/:id', (request, response, next) => {
 		.catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
-	const info = `
-	<p>Phonebook has info for ${persons.length} ${persons.length === 1 ? 'person' : 'people'}</p>
-	<p>${new Date()}</p>
-	`
-	response.send(info)
+app.get('/info', (request, response, next) => {
+	Person.find({})
+		.then(persons => {
+			const info = `
+			<p>
+				Phonebook has info for ${persons.length} ${persons.length === 1 ? 'person' : 'people'}
+			</p>
+			<p>${new Date()}</p>
+			`
+			response.send(info)
+		})
+		.catch(error => next(error))
 })
 
 const errorHandler = (error, request, response, next) => {
